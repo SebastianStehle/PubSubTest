@@ -17,9 +17,13 @@ namespace PubSubTest.Orleans
 
         public OrleansPubSub(IGrainFactory grainFactory, ILocalSiloDetails localSiloDetails, ILogger<OrleansPubSub> logger)
         {
-            brokerGrain = grainFactory.GetGrain<IPubSubBrokerGrain>(Constants.BrokerId);
+            brokerGrain =
+                grainFactory.GetGrain<IPubSubBrokerGrain>(
+                    Constants.BrokerId);
 
-            hostGrain = grainFactory.GetGrain<IPubSubHostGrain>(localSiloDetails.SiloAddress.ToParsableString());
+            hostGrain =
+                grainFactory.GetGrain<IPubSubHostGrain>(
+                    localSiloDetails.SiloAddress.ToParsableString());
 
             this.logger = logger;
         }

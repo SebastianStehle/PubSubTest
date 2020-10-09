@@ -11,14 +11,11 @@ namespace PubSubTest.OrleansStreams
     public sealed class OrleansStreamingPubSub : IPubSub, IStartupTask
     {
         private readonly IStreamingPubSubHostGrain hostGrain;
-        private readonly IStreamingPubSubBrokerGrain brokerGrain;
         private readonly ConcurrentBag<Action<string>> subscribers = new ConcurrentBag<Action<string>>();
         private readonly ILogger<OrleansStreamingPubSub> logger;
 
         public OrleansStreamingPubSub(IGrainFactory grainFactory, ILocalSiloDetails localSiloDetails, ILogger<OrleansStreamingPubSub> logger)
         {
-            brokerGrain = grainFactory.GetGrain<IStreamingPubSubBrokerGrain>(Constants.BrokerId);
-
             hostGrain = grainFactory.GetGrain<IStreamingPubSubHostGrain>(localSiloDetails.SiloAddress.ToParsableString());
 
             this.logger = logger;
@@ -31,12 +28,12 @@ namespace PubSubTest.OrleansStreams
 
         public Task PublishAsync(string payload)
         {
-            return brokerGrain.SendAsync(payload);
+            return hostGrain.SendAsync(payload);
         }
 
         public Task<int> GetClusterSizeAsync()
         {
-            return brokerGrain.GetClusterSizeAsync();
+            return Task.FromResult(-1);
         }
 
         public void Publish(string payload)

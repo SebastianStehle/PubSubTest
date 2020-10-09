@@ -39,7 +39,10 @@ namespace PubSubTest.Tests
 
             await WaitForClusterSizeAsync(cluster, 3);
 
-            await PublishAsync(3);
+            for (var i = 0; i < 1000; i++)
+            {
+                await PublishAsync(3);
+            }
         }
 
         [Fact]
