@@ -1,7 +1,7 @@
 ﻿using Orleans;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public interface IPubSubHostGrain : IGrainWithGuidKey
     {

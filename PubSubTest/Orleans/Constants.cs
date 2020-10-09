@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public sealed class Constants
     {

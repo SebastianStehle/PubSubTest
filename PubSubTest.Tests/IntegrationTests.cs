@@ -1,7 +1,7 @@
 using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.TestingHost;
-using PubSubTest.Abstractions;
+using PubSubTest.Orleans;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using Xunit;
 
 namespace PubSubTest.Tests
 {
-    public class UnitTests
+    public class IntegrationTests
     {
         public sealed class Silo : IStartupTask, IDisposable
         {
@@ -69,7 +69,7 @@ namespace PubSubTest.Tests
             }
         }
 
-        public UnitTests()
+        public IntegrationTests()
         {
             Silo.Clear();
         }

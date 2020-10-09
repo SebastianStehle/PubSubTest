@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public interface IPubSubBrokerGrain : IGrainWithStringKey
     {

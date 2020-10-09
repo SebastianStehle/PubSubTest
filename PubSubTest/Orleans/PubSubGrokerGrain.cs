@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public sealed class PubSubGrokerGrain : Grain, IPubSubBrokerGrain
     {

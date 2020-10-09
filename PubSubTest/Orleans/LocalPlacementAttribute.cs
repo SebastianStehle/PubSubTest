@@ -2,7 +2,7 @@
 using Orleans.Runtime;
 using System;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     [Serializable]
     public class LocalPlacementStrategy : PlacementStrategy
@@ -15,7 +15,6 @@ namespace PubSubTest.Abstractions
         public LocalPlacementAttribute()
             : base(new LocalPlacementStrategy())
         {
-
         }
     }
 }

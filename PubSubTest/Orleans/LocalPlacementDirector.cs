@@ -2,7 +2,7 @@
 using Orleans.Runtime.Placement;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public sealed class LocalPlacementDirector : IPlacementDirector
     {

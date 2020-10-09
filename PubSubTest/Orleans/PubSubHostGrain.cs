@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     [LocalPlacement]
     public sealed class PubSubHostGrain : Grain, IPubSubHostGrain

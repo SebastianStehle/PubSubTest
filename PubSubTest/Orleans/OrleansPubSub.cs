@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public sealed class OrleansPubSub : IPubSub, IStartupTask
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Orleans.Hosting;
 
-namespace PubSubTest.Abstractions
+namespace PubSubTest.Orleans
 {
     public static class ServiceExtensions
     {
