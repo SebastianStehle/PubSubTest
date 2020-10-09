@@ -1,14 +1,13 @@
 ﻿using Orleans;
-using System;
 using System.Threading.Tasks;
 
 namespace PubSubTest.Orleans
 {
     public interface IPubSubBrokerGrain : IGrainWithStringKey
     {
-        Task IAmAliveAsync(Guid hostId);
+        Task IAmAliveAsync(string hostId);
 
-        Task IamDeadAsync(Guid hostId);
+        Task IamDeadAsync(string hostId);
 
         Task SendAsync(string payload);
 

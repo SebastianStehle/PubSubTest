@@ -2,7 +2,7 @@
 using Orleans.Hosting;
 using PubSubTest.Placement;
 
-namespace PubSubTest.Orleans
+namespace PubSubTest.OrleansStreams
 {
     public static class ServiceExtensions
     {
@@ -12,11 +12,14 @@ namespace PubSubTest.Orleans
 
             siloBuilder.ConfigureServices(services =>
             {
-                services.AddSingleton<OrleansPubSub>();
-                services.AddSingleton<IPubSub>(c => c.GetRequiredService<OrleansPubSub>());
+                services.AddSingleton<OrleansStreamingPubSub>();
+                services.AddSingleton<IPubSub>(c => c.GetRequiredService<OrleansStreamingPubSub>());
             });
 
-            siloBuilder.AddStartupTask<OrleansPubSub>();
+            siloBuilder.AddSimpleMessageStreamProvider(Constants.StreamProviderName);
+            siloBuilder.AddMemoryGrainStorage("PubSubStore");
+
+            siloBuilder.AddStartupTask<OrleansStreamingPubSub>();
         }
     }
 }

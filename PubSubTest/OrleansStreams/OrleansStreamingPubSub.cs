@@ -6,20 +6,20 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PubSubTest.Orleans
+namespace PubSubTest.OrleansStreams
 {
-    public sealed class OrleansPubSub : IPubSub, IStartupTask
+    public sealed class OrleansStreamingPubSub : IPubSub, IStartupTask
     {
-        private readonly IPubSubHostGrain hostGrain;
-        private readonly IPubSubBrokerGrain brokerGrain;
+        private readonly IStreamingPubSubHostGrain hostGrain;
+        private readonly IStreamingPubSubBrokerGrain brokerGrain;
         private readonly ConcurrentBag<Action<string>> subscribers = new ConcurrentBag<Action<string>>();
-        private readonly ILogger<OrleansPubSub> logger;
+        private readonly ILogger<OrleansStreamingPubSub> logger;
 
-        public OrleansPubSub(IGrainFactory grainFactory, ILocalSiloDetails localSiloDetails, ILogger<OrleansPubSub> logger)
+        public OrleansStreamingPubSub(IGrainFactory grainFactory, ILocalSiloDetails localSiloDetails, ILogger<OrleansStreamingPubSub> logger)
         {
-            brokerGrain = grainFactory.GetGrain<IPubSubBrokerGrain>(Constants.BrokerId);
+            brokerGrain = grainFactory.GetGrain<IStreamingPubSubBrokerGrain>(Constants.BrokerId);
 
-            hostGrain = grainFactory.GetGrain<IPubSubHostGrain>(localSiloDetails.SiloAddress.ToParsableString());
+            hostGrain = grainFactory.GetGrain<IStreamingPubSubHostGrain>(localSiloDetails.SiloAddress.ToParsableString());
 
             this.logger = logger;
         }

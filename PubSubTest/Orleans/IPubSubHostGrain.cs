@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace PubSubTest.Orleans
 {
-    public interface IPubSubHostGrain : IGrainWithGuidKey
+    public interface IPubSubHostGrain : IGrainWithStringKey
     {
         Task ActivateAsync();
 

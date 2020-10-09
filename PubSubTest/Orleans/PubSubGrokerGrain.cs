@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PubSubTest.Orleans
 {
-    public sealed class PubSubGrokerGrain : Grain, IPubSubBrokerGrain
+    public sealed class StreamingPubSubGrokerGrain : Grain, IPubSubBrokerGrain
     {
-        private readonly Dictionary<Guid, DateTime> hosts = new Dictionary<Guid, DateTime>();
+        private readonly Dictionary<string, DateTime> hosts = new Dictionary<string, DateTime>();
         private readonly ILogger<OrleansPubSub> logger;
 
-        public PubSubGrokerGrain(ILogger<OrleansPubSub> logger)
+        public StreamingPubSubGrokerGrain(ILogger<OrleansPubSub> logger)
         {
             this.logger = logger;
         }
@@ -41,7 +41,7 @@ namespace PubSubTest.Orleans
             {
                 var now = DateTime.UtcNow;
 
-                var dead = new Guid[hosts.Count];
+                var dead = new string[hosts.Count];
 
                 var i = 0;
 
@@ -65,14 +65,14 @@ namespace PubSubTest.Orleans
             }
         }
 
-        public Task IAmAliveAsync(Guid hostId)
+        public Task IAmAliveAsync(string hostId)
         {
             hosts[hostId] = DateTime.UtcNow;
 
             return Task.CompletedTask;
         }
 
-        public Task IamDeadAsync(Guid hostId)
+        public Task IamDeadAsync(string hostId)
         {
             hosts.Remove(hostId);
 
@@ -98,7 +98,7 @@ namespace PubSubTest.Orleans
             return Task.WhenAll(tasks);
         }
 
-        private async Task SendAsync(Guid hostId, string payload)
+        private async Task SendAsync(string hostId, string payload)
         {
             var host = GrainFactory.GetGrain<IPubSubHostGrain>(hostId);
 

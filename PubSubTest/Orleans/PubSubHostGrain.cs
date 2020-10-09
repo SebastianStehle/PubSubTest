@@ -1,4 +1,5 @@
 ﻿using Orleans;
+using PubSubTest.Placement;
 using System;
 using System.Threading.Tasks;
 
@@ -21,14 +22,28 @@ namespace PubSubTest.Orleans
 
             RegisterTimer(x => ReportIamAliveAsync(), null, TimeSpan.Zero, Constants.ReportAlivePeriod);
 
+            DelayDeactivation(TimeSpan.FromDays(100000));
+
             return base.OnActivateAsync();
+        }
+
+        public override Task OnDeactivateAsync()
+        {
+            return ReportIamDeadAsync();
         }
 
         private Task ReportIamAliveAsync()
         {
-            var id = this.GetPrimaryKey();
+            var id = this.GetPrimaryKeyString();
 
             return broker.IAmAliveAsync(id);
+        }
+
+        private Task ReportIamDeadAsync()
+        {
+            var id = this.GetPrimaryKeyString();
+
+            return broker.IamDeadAsync(id);
         }
 
         public Task ActivateAsync()

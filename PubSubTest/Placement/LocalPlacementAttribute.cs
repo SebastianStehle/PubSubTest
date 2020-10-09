@@ -2,7 +2,7 @@
 using Orleans.Runtime;
 using System;
 
-namespace PubSubTest.Orleans
+namespace PubSubTest.Placement
 {
     [Serializable]
     public class LocalPlacementStrategy : PlacementStrategy

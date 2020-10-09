@@ -1,75 +1,28 @@
+﻿using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.TestingHost;
-using PubSubTest.Orleans;
+using PubSubTest.OrleansStreams;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace PubSubTest.Tests
 {
-    public class IntegrationTests
+    public class OrleansStreamingPubSubTests
     {
-        public sealed class Silo : IStartupTask, IDisposable
-        {
-            private static readonly List<Silo> allSilos = new List<Silo>();
-            private readonly HashSet<string> received = new HashSet<string>();
-
-            public IPubSub PubSub { get; }
-
-            public static IReadOnlyCollection<Silo> All => allSilos;
-
-            public IReadOnlyCollection<string> Received => received;
-
-            public Silo(IPubSub pubSub)
-            {
-                PubSub = pubSub;
-            }
-
-            public static void Clear()
-            {
-                allSilos.Clear();
-            }
-
-            public Task Execute(CancellationToken cancellationToken)
-            {
-                lock (allSilos)
-                {
-                    allSilos.Add(this);
-                }
-
-                PubSub.Subscribe(message =>
-                {
-                    received.Add(message);
-                });
-
-                return Task.CompletedTask;
-            }
-
-            public void Dispose()
-            {
-                lock (allSilos)
-                {
-                    allSilos.Remove(this);
-                }
-            }
-        }
-
-        public class Configurator : ISiloConfigurator
+        private sealed class Configurator : ISiloConfigurator
         {
             public void Configure(ISiloBuilder siloBuilder)
             {
                 siloBuilder.AddPubSub();
-
                 siloBuilder.AddStartupTask<Silo>();
             }
         }
 
-        public IntegrationTests()
+        public OrleansStreamingPubSubTests()
         {
             Silo.Clear();
         }
@@ -99,9 +52,26 @@ namespace PubSubTest.Tests
 
             await cluster.DeployAsync();
 
-            await cluster.KillSiloAsync(cluster.Silos[1]);
+            await cluster.StopSiloAsync(cluster.Silos[1]);
 
             await WaitForClusterSizeAsync(cluster, 2);
+
+            await PublishAsync(2);
+
+            await cluster.DisposeAsync();
+        }
+
+        [Fact]
+        public async Task Should_not_send_message_to_dead_but_not_unregistered_member()
+        {
+            var cluster =
+                new TestClusterBuilder(3)
+                    .AddSiloBuilderConfigurator<Configurator>()
+                    .Build();
+
+            await cluster.DeployAsync();
+
+            await cluster.KillSiloAsync(cluster.Silos[1]);
 
             await PublishAsync(2);
 
@@ -138,16 +108,16 @@ namespace PubSubTest.Tests
 
         private async Task<bool> WaitForClusterSizeAsync(TestCluster cluster, int expectedSize)
         {
-            var brokerGrain = cluster.Client.GetGrain<IPubSubBrokerGrain>(Constants.BrokerId);
+            var managementGrain = cluster.Client.GetGrain<IManagementGrain>(0);
 
-            var timeout = TimeSpan.FromSeconds(10);
+            var timeout = TestCluster.GetLivenessStabilizationTime(new ClusterMembershipOptions());
 
             var stopWatch = Stopwatch.StartNew();
             do
             {
-                var hosts = await brokerGrain.GetClusterSizeAsync();
+                var hosts = await managementGrain.GetHosts();
 
-                if (hosts == expectedSize)
+                if (hosts.Count == expectedSize)
                 {
                     stopWatch.Stop();
                     return true;
