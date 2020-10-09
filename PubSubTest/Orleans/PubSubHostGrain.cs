@@ -10,6 +10,7 @@ namespace PubSubTest.Orleans
     {
         private readonly OrleansPubSub pubSub;
         private IPubSubBrokerGrain broker;
+        private string id;
 
         public PubSubHostGrain(OrleansPubSub pubSub)
         {
@@ -18,6 +19,8 @@ namespace PubSubTest.Orleans
 
         public override Task OnActivateAsync()
         {
+            id = this.GetPrimaryKeyString();
+
             broker = GrainFactory.GetGrain<IPubSubBrokerGrain>(Constants.BrokerId);
 
             RegisterTimer(x => ReportIamAliveAsync(), null, TimeSpan.Zero, Constants.ReportAlivePeriod);
@@ -34,15 +37,11 @@ namespace PubSubTest.Orleans
 
         private Task ReportIamAliveAsync()
         {
-            var id = this.GetPrimaryKeyString();
-
             return broker.IAmAliveAsync(id);
         }
 
         private Task ReportIamDeadAsync()
         {
-            var id = this.GetPrimaryKeyString();
-
             return broker.IamDeadAsync(id);
         }
 
