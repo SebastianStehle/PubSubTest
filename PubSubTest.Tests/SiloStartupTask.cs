@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace PubSubTest.Tests
 {
-    public sealed class Silo : IStartupTask, IDisposable
+    public sealed class SiloStartupTask : IStartupTask, IDisposable
     {
-        private static readonly List<Silo> allSilos = new List<Silo>();
+        private static readonly List<SiloStartupTask> allSilos = new List<SiloStartupTask>();
         private readonly HashSet<string> received = new HashSet<string>();
 
         public IPubSub PubSub { get; }
 
-        public static IReadOnlyCollection<Silo> All => allSilos;
+        public static IReadOnlyCollection<SiloStartupTask> All => allSilos;
 
         public IReadOnlyCollection<string> Received => received;
 
-        public Silo(IPubSub pubSub)
+        public SiloStartupTask(IPubSub pubSub)
         {
             PubSub = pubSub;
         }

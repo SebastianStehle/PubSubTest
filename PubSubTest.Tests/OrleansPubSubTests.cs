@@ -16,13 +16,13 @@ namespace PubSubTest.Tests
             public void Configure(ISiloBuilder siloBuilder)
             {
                 siloBuilder.AddPubSub();
-                siloBuilder.AddStartupTask<Silo>();
+                siloBuilder.AddStartupTask<SiloStartupTask>();
             }
         }
 
         public OrleansPubSubTests()
         {
-            Silo.Clear();
+            SiloStartupTask.Clear();
         }
 
         [Fact]
@@ -85,9 +85,9 @@ namespace PubSubTest.Tests
         {
             var message = Guid.NewGuid().ToString();
 
-            await Silo.All.First().PubSub.PublishAsync(message);
+            await SiloStartupTask.All.First().PubSub.PublishAsync(message);
 
-            Assert.Equal(expectedCount, Silo.All.Count(x => x.Received.Contains(message)));
+            Assert.Equal(expectedCount, SiloStartupTask.All.Count(x => x.Received.Contains(message)));
         }
 
         private async Task<bool> WaitForClusterSizeAsync(TestCluster cluster, int expectedSize)
